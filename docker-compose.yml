@@ -1,0 +1,29 @@
+
+
+services:
+  app:
+    build: .
+    image: apimon-flask:local
+    command: python app.py
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+
+  grafana:
+    image: grafana/grafana:9.5.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      # optionally mount the sqlite DB so Grafana can access it
+      - ./apimon.db:/var/lib/grafana/data/apimon.db
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      # add provisioning, datasources, dashboards as needed
+
+volumes:
+  grafana-storage:
